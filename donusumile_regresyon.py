@@ -189,36 +189,44 @@ for i, col in enumerate(columns):
 plt.tight_layout()
 plt.show()
 
-df_transformed = df.copy()
-
+print("dönüşüm için işlemler")
 from sklearn.preprocessing import PowerTransformer
 
-X = df_transformed.drop("median_house_value", axis = 1)
+# Veri kopyalama
+df_transformed = pd.read_csv("housing.csv")
+
+# Sadece sayısal sütunları seç
+numeric_cols = df_transformed.select_dtypes(include=['int64', 'float64']).columns.tolist()
+numeric_cols.remove("median_house_value")  # hedef değişkeni çıkar
+
+X = df_transformed[numeric_cols]
 y = df_transformed["median_house_value"]
 
-from sklearn.model_selection import train_test_split
-
+# Train-test split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=15)
 
+# Power Transformer (Yeo-Johnson)
 pt_X = PowerTransformer(method="yeo-johnson")
 X_train_transformed = pt_X.fit_transform(X_train)
 X_test_transformed = pt_X.transform(X_test)
 
-fig, axes = plt.subplots(nrows = 3, ncols = 3, figsize=(15,12))
-fig.suptitle("Distributions", fontsize = 18, fontweight = "bold")
+# Histogramlar
+fig, axes = plt.subplots(nrows=3, ncols=3, figsize=(15,12))
+fig.suptitle("Distributions", fontsize=18, fontweight="bold")
 
-for i, col in enumerate(columns):
+for i, col in enumerate(numeric_cols):
     row = i // 3
     col_idx = i % 3
     ax = axes[row, col_idx]
-    sns.histplot(data = df_transformed, x = col, kde=True, ax=ax, bins=30)
-    ax.set_title(col, fontsize=10, fontstyle = "italic")
+    sns.histplot(data=df_transformed, x=col, kde=True, ax=ax, bins=30)
+    ax.set_title(col, fontsize=10, fontstyle="italic")
+
+# Fazla boş eksenleri kaldır
+for j in range(len(numeric_cols), 9):
+    fig.delaxes(axes.flatten()[j])
 
 plt.tight_layout()
 plt.show()
-
-
-
 
 
 
