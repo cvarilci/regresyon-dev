@@ -171,6 +171,27 @@ print("-----------------------------------")
 print("\n")
 
 
+print("-------------------------------------------------")
+print("donuşumler ile ilgli bölüm")
+
+print("tekrar dönüşüm öncesi grafiğe bakalım.")
+
+fig, axes = plt.subplots(nrows = 3, ncols = 3, figsize=(15,12))
+fig.suptitle("Distributions", fontsize = 18, fontweight = "bold")
+
+for i, col in enumerate(columns):
+    row = i // 3
+    col_idx = i % 3
+    ax = axes[row, col_idx]
+    sns.histplot(data = df, x = col, kde=True, ax=ax, bins=30)
+    ax.set_title(col, fontsize=10, fontstyle = "italic")
+
+plt.tight_layout()
+plt.show()
+
+
+
+
 
 
 
