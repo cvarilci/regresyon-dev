@@ -189,6 +189,36 @@ for i, col in enumerate(columns):
 plt.tight_layout()
 plt.show()
 
+df_transformed = df.copy()
+
+from sklearn.preprocessing import PowerTransformer
+
+X = df_transformed.drop("median_house_value", axis = 1)
+y = df_transformed["median_house_value"]
+
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=15)
+
+pt_X = PowerTransformer(method="yeo-johnson")
+X_train_transformed = pt_X.fit_transform(X_train)
+X_test_transformed = pt_X.transform(X_test)
+
+fig, axes = plt.subplots(nrows = 3, ncols = 3, figsize=(15,12))
+fig.suptitle("Distributions", fontsize = 18, fontweight = "bold")
+
+for i, col in enumerate(columns):
+    row = i // 3
+    col_idx = i % 3
+    ax = axes[row, col_idx]
+    sns.histplot(data = df_transformed, x = col, kde=True, ax=ax, bins=30)
+    ax.set_title(col, fontsize=10, fontstyle = "italic")
+
+plt.tight_layout()
+plt.show()
+
+
+
 
 
 
